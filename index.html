@@ -20,13 +20,13 @@
     header {
       width: 100%;
       background-color: white;
-      padding: 10px 0; /* تقليل الـ padding */
+      padding: 10px 0;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       display: flex;
       justify-content: center;
       position: relative;
       right: 0;
-      left: 0; /* إضافة هذه الخاصية */
+      left: 0;
     }
 
     .logo-container {
@@ -35,18 +35,17 @@
       justify-content: center;
       margin: 0;
       padding: 0;
-      transform: translateX(5px); /* تعديل بسيط للمسافة */
+      transform: translateX(5px);
     }
 
     header img {
-      height: 60px; /* تغيير من max-height إلى height ثابت */
+      height: 60px;
       width: auto;
       object-fit: contain;
       display: block;
       margin: 0;
     }
 
-    /* باقي الأنماط كما هي */
     .player-container {
       width: 95%;
       max-width: 800px;
@@ -57,7 +56,46 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* ... باقي الأنماط ... */
+    video {
+      width: 100%;
+      border-radius: 12px;
+      background-color: black;
+    }
+
+    video::-webkit-media-controls-play-button,
+    video::-webkit-media-controls-pause-button {
+      background-color: #00b300;
+      border-radius: 50%;
+    }
+
+    video::-webkit-media-controls-volume-slider,
+    video::-webkit-media-controls-timeline {
+      accent-color: #00b300;
+    }
+
+    video::-webkit-media-controls {
+      color: #00b300;
+    }
+
+    .quality-selector {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .quality-selector label {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .quality-selector select {
+      background-color: #fff;
+      color: #00b300;
+      border: 2px solid #00b300;
+      padding: 6px 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -68,6 +106,51 @@
     </div>
   </header>
 
-  <!-- باقي HTML -->
+  <div class="player-container">
+    <video id="video" controls></video>
+    <div class="quality-selector" id="qualityContainer" style="display: none;">
+      <label for="quality">اختر الجودة:</label>
+      <select id="quality"></select>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    const video = document.getElementById('video');
+    const videoSrc = 'https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8';
+    const qualityContainer = document.getElementById('qualityContainer');
+    const qualitySelect = document.getElementById('quality');
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+
+      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+        if (data.levels.length > 0) {
+          qualityContainer.style.display = 'block';
+
+          const autoOption = document.createElement('option');
+          autoOption.value = -1;
+          autoOption.text = 'تلقائي';
+          autoOption.selected = true;
+          qualitySelect.appendChild(autoOption);
+
+          data.levels.forEach((level, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.text = `${level.height}p`;
+            qualitySelect.appendChild(option);
+          });
+
+          qualitySelect.addEventListener('change', () => {
+            hls.currentLevel = parseInt(qualitySelect.value);
+          });
+        }
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
+    }
+  </script>
 </body>
 </html>
