@@ -4,13 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>remo TV ريمو تيفي</title>
+  <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.3.5/dist/shaka-player.compiled.js"></script>
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Arial', sans-serif;
       background-color: #111;
-      color: white;
+      color: #fff;
+      font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -41,20 +42,6 @@
       border-radius: 12px;
       background-color: black;
     }
-
-    .quality-selector {
-      margin-top: 10px;
-      text-align: center;
-    }
-
-    .quality-selector select {
-      background-color: #222;
-      color: #0f0;
-      border: 1px solid #0f0;
-      padding: 5px 10px;
-      font-size: 16px;
-      border-radius: 5px;
-    }
   </style>
 </head>
 <body>
@@ -64,44 +51,52 @@
   </header>
 
   <div class="player-container">
-    <video id="video" controls></video>
-    <div class="quality-selector" id="qualityContainer" style="display: none;">
-      <label for="quality">اختر الجودة: </label>
-      <select id="quality"></select>
-    </div>
+    <video id="video" controls autoplay></video>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
-    const video = document.getElementById('video');
-    const videoSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'; // رابط m3u8
-    const qualityContainer = document.getElementById('qualityContainer');
-    const qualitySelect = document.getElementById('quality');
+    async function initPlayer() {
+      const video = document.getElementById('video');
+      const player = new shaka.Player(video);
 
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(videoSrc);
-      hls.attachMedia(video);
+      // دعم الأخطاء
+      player.addEventListener('error', e => {
+        console.error('Shaka Player Error:', e.detail);
+      });
 
-      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-        if (data.levels.length > 1) {
-          qualityContainer.style.display = 'block';
-
-          data.levels.forEach((level, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.text = `${level.height}p`;
-            qualitySelect.appendChild(option);
-          });
-
-          qualitySelect.addEventListener('change', () => {
-            const selectedQuality = parseInt(qualitySelect.value);
-            hls.currentLevel = selectedQuality;
-          });
+      // إعداد ClearKey
+      player.configure({
+        drm: {
+          clearKeys: {
+            '73efb1eb27294f8ea059765b368f411b': '8af553e93bc5b20e828a14a7643e0c59'
+          }
+        },
+        networking: {
+          requestFilter: function (type, request) {
+            if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+                type === shaka.net.NetworkingEngine.RequestType.SEGMENT) {
+              request.headers['Referer'] = 'https://shahid.mbc.net/';
+              request.headers['Origin'] = 'https://shahid.mbc.net';
+              request.headers['User-Agent'] = 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36';
+            }
+          }
         }
       });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = videoSrc;
+
+      // تحميل الفيديو
+      try {
+        await player.load('https://4k-event2-new-25fps-enc.edgenextcdn.net/out/v1/c40564684d074b29a21efcf70725df3c/index.mpd');
+        console.log('الفيديو تم تحميله بنجاح');
+      } catch (error) {
+        console.error('فشل تحميل الفيديو:', error);
+      }
+    }
+
+    shaka.polyfill.installAll();
+    if (shaka.Player.isBrowserSupported()) {
+      initPlayer();
+    } else {
+      console.error('المتصفح لا يدعم Shaka Player');
     }
   </script>
 </body>
