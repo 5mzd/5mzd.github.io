@@ -6,7 +6,7 @@
   <title>remo TV ريمو تيفي</title>
   <style>
     body {
-      margin: auto;
+      margin: 0; /* تغيير من auto إلى 0 لإزالة الهوامش */
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f2f2f2;
@@ -14,30 +14,38 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      overflow-x: hidden; /* منع التمرير الأفقي */
     }
 
     header {
-  width: 100%;
-  background-color: white;
-  padding: 20px 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  display: flex;
-  justify-content: center; /* يضمن التوسيط الكامل */
-  align-items: center;
-  text-align: center;
-}
-.logo-container {
-  width: 100%; /* اجعل العرض 100% */
-  display: flex;
-  justify-content: center;
-}
-header img {
-  max-height: 80px;
-  width: auto;
-  object-fit: contain;
-  display: block; /* إزالة أي فراغ ناتج عن inline */
-}
+      width: 100vw; /* استخدام عرض viewport كامل */
+      max-width: 100%; /* التأكد من عدم تجاوز العرض */
+      background-color: white;
+      padding: 20px 0; /* تقليل padding الجانبي إلى 0 */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      position: relative;
+      right: 0; /* التأكد من المحاذاة مع الحافة */
+    }
 
+    .logo-container {
+      width: auto; /* تغيير من 100% إلى auto */
+      display: flex;
+      justify-content: center;
+      margin: 0; /* إزالة أي هوامش */
+      padding: 0; /* إزالة أي حشوات */
+    }
+
+    header img {
+      max-height: 80px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      margin-right: 0; /* إزالة أي هوامش */
+    }
+
+    /* باقي الأنماط تبقى كما هي */
     .player-container {
       width: 95%;
       max-width: 800px;
