@@ -19,20 +19,32 @@
     header {
       width: 100%;
       background-color: white;
-      padding: 30px 10px 20px;
+      padding: 20px 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      max-width: 300px;
+      width: 100%;
       display: flex;
       justify-content: center;
     }
 
     header img {
-      max-height: 140px;
+      max-height: 80px;
+      width: auto;
+      object-fit: contain;
     }
 
     .player-container {
       width: 95%;
       max-width: 800px;
-      margin-top: 30px;
+      margin: 30px 0;
       background-color: white;
       padding: 20px;
       border-radius: 15px;
@@ -85,7 +97,9 @@
 <body>
 
   <header>
-    <img src="https://firebasestorage.googleapis.com/v0/b/alnasseri-70c15.appspot.com/o/fs%2F1000142637.png?alt=media&token=a6caf096-876f-49e1-8368-2a622f847e6d" alt="remo TV Logo">
+    <div class="logo-container">
+      <img src="https://firebasestorage.googleapis.com/v0/b/alnasseri-70c15.appspot.com/o/fs%2F1000142637.png?alt=media&token=a6caf096-876f-49e1-8368-2a622f847e6d" alt="remo TV Logo">
+    </div>
   </header>
 
   <div class="player-container">
