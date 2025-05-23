@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>remo TV ريمو تيفي</title>
-  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
   <style>
     body {
       margin: 0;
@@ -46,10 +45,10 @@
       background-color: white;
       border-radius: 15px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding-top: 56.25%; /* 16:9 aspect ratio */
+      padding-top: 56.25%;
     }
 
-    .video-js {
+    #video {
       position: absolute;
       top: 0;
       left: 0;
@@ -68,20 +67,33 @@
   </header>
 
   <div class="player-container">
-    <video id="my-video" class="video-js vjs-default-skin" controls preload="auto">
-      <source src="https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8" type="application/x-mpegURL" />
-      المتصفح لا يدعم تشغيل الفيديو
-    </video>
+    <video id="video" controls autoplay></video>
   </div>
 
-  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
-  <script src="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/shaka-player.compiled.js"></script>
   <script>
-    const player = videojs('my-video');
-    player.httpSourceSelector({ default: 'auto' });
-    player.ready(function () {
-      player.httpSourceSelector();
-    });
+    async function initApp() {
+      const video = document.getElementById('video');
+      const player = new shaka.Player(video);
+
+      // اختياري: تسجيل أخطاء التشغيل
+      player.addEventListener('error', (e) => console.error('خطأ:', e.detail));
+
+      // تحميل الفيديو
+      try {
+        await player.load('https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8');
+        console.log('تم تحميل الفيديو بنجاح');
+      } catch (error) {
+        console.error('فشل التحميل', error);
+      }
+    }
+
+    // تحقق من دعم المتصفح
+    if (shaka.Player.isBrowserSupported()) {
+      initApp();
+    } else {
+      alert('المتصفح لا يدعم تشغيل الفيديو عبر Shaka Player');
+    }
   </script>
 </body>
 </html>
