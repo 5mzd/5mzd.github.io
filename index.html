@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>remo TV ريمو تيفي</title>
+  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
   <style>
     body {
       margin: 0;
@@ -25,76 +26,35 @@
       display: flex;
       justify-content: center;
       position: relative;
-      right: 0;
-      left: 0;
     }
 
     .logo-container {
-      width: auto;
       display: flex;
       justify-content: center;
-      margin: 0;
-      padding: 0;
       transform: translateX(5px);
     }
 
     header img {
       height: 60px;
-      width: auto;
       object-fit: contain;
-      display: block;
-      margin: 0;
     }
 
-        .player-container {
-  width: 95%;
-  max-width: 800px;
-  margin: 20px auto; /* توحيد الهوامش الجانبية تلقائياً */
-  background-color: white;
-  padding: 15px;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+    .player-container {
+      width: 95%;
+      max-width: 800px;
+      margin: 20px auto 20px 5px; /* 5px من اليسار */
+      background-color: white;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
 
-    video {
+    .video-js {
       width: 100%;
+      height: auto;
       border-radius: 12px;
       background-color: black;
-    }
-
-    video::-webkit-media-controls-play-button,
-    video::-webkit-media-controls-pause-button {
-      background-color: #00b300;
-      border-radius: 50%;
-    }
-
-    video::-webkit-media-controls-volume-slider,
-    video::-webkit-media-controls-timeline {
-      accent-color: #00b300;
-    }
-
-    video::-webkit-media-controls {
-      color: #00b300;
-    }
-
-    .quality-selector {
-      margin-top: 15px;
-      text-align: center;
-    }
-
-    .quality-selector label {
-      font-weight: bold;
-      color: #333;
-    }
-
-    .quality-selector select {
-      background-color: #fff;
-      color: #00b300;
-      border: 2px solid #00b300;
-      padding: 6px 12px;
-      font-size: 16px;
-      border-radius: 6px;
-      margin-right: 10px;
+      font-family: inherit;
     }
   </style>
 </head>
@@ -107,50 +67,12 @@
   </header>
 
   <div class="player-container">
-    <video id="video" controls></video>
-    <div class="quality-selector" id="qualityContainer" style="display: none;">
-      <label for="quality">اختر الجودة:</label>
-      <select id="quality"></select>
-    </div>
+    <video id="video" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'>
+      <source src="https://raw.githubusercontent.com/zzzz12099/Nova2/refs/heads/main/Nova1.m3u8" type="application/x-mpegURL" />
+    </video>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script>
-    const video = document.getElementById('video');
-    const videoSrc = 'https://raw.githubusercontent.com/zzzz12099/Nova2/refs/heads/main/Nova1.m3u8';
-    const qualityContainer = document.getElementById('qualityContainer');
-    const qualitySelect = document.getElementById('quality');
-
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(videoSrc);
-      hls.attachMedia(video);
-
-      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-        if (data.levels.length > 0) {
-          qualityContainer.style.display = 'block';
-
-          const autoOption = document.createElement('option');
-          autoOption.value = -1;
-          autoOption.text = 'تلقائي';
-          autoOption.selected = true;
-          qualitySelect.appendChild(autoOption);
-
-          data.levels.forEach((level, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.text = `${level.height}p`;
-            qualitySelect.appendChild(option);
-          });
-
-          qualitySelect.addEventListener('change', () => {
-            hls.currentLevel = parseInt(qualitySelect.value);
-          });
-        }
-      });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = videoSrc;
-    }
-  </script>
+  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-http-streaming@3.0.0/dist/videojs-http-streaming.min.js"></script>
 </body>
 </html>
