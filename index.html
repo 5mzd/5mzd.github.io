@@ -17,29 +17,26 @@
     }
 
     header {
-      width: 100%;
-      background-color: white;
-      padding: 20px 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .logo-container {
-      max-width: 300px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-
-    header img {
-      max-height: 80px;
-      width: auto;
-      object-fit: contain;
-    }
+  width: 100%;
+  background-color: white;
+  padding: 20px 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: center; /* يضمن التوسيط الكامل */
+  align-items: center;
+  text-align: center;
+}
+.logo-container {
+  width: 100%; /* اجعل العرض 100% */
+  display: flex;
+  justify-content: center;
+}
+header img {
+  max-height: 80px;
+  width: auto;
+  object-fit: contain;
+  display: block; /* إزالة أي فراغ ناتج عن inline */
+}
 
     .player-container {
       width: 95%;
