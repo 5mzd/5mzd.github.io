@@ -54,6 +54,15 @@
       display: block;
     }
 
+    .quality-note {
+      font-size: 14px;
+      color: #d80000;
+      font-weight: 600;
+      margin: 10px auto -5px;
+      text-align: center;
+      font-family: 'Cairo', sans-serif;
+    }
+
     .quality-selector {
       margin: 15px auto;
       padding: 10px 20px;
@@ -70,7 +79,6 @@
       font-weight: 600;
       color: #2CAF1D;
       margin-left: 10px;
-      font-family: 'Cairo', sans-serif;
     }
 
     .quality-selector select {
@@ -97,16 +105,18 @@
 
     .download-section h2 {
       color: #2CAF1D;
-      font-weight: 600;
+      font-weight: 500;
+      font-size: 16px;
+      margin-bottom: 15px;
       font-family: 'Cairo', sans-serif;
     }
 
     .download-buttons {
       display: flex;
       justify-content: center;
-      gap: 7px;
-      margin-top: 20px;
+      gap: 10px;
       flex-wrap: wrap;
+      margin-bottom: 15px;
     }
 
     .download-buttons a {
@@ -115,25 +125,56 @@
     }
 
     .download-buttons button {
-      font-family: 'Cairo', sans-serif;
       background-color: #179CDE;
       color: white;
       border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 14px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       cursor: pointer;
+      font-family: 'Cairo', sans-serif;
     }
 
-    .download-buttons a:nth-child(2) button {
+    .download-buttons a:last-child button {
       background-color: #3DDC84;
     }
 
     .download-buttons img {
-      height: 24px;
+      height: 20px;
+    }
+
+    .telegram-join {
+      display: flex;
+      justify-content: center;
+    }
+
+    .telegram-join a {
+      text-decoration: none;
+      width: calc(100% - 40px);
+      max-width: 400px;
+    }
+
+    .telegram-join button {
+      width: 100%;
+      background-color: white;
+      color: #179CDE;
+      border: 2px solid #179CDE;
+      padding: 8px 14px;
+      font-size: 14px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .telegram-join img {
+      height: 20px;
     }
   </style>
 </head>
@@ -149,6 +190,8 @@
     <video id="video" controls autoplay playsinline></video>
   </div>
 
+  <div class="quality-note">تنبيه: يتم عرض المباريات المهمة فقط!</div>
+
   <div class="quality-selector">
     <label for="quality">اختر الجودة:</label>
     <select id="quality">
@@ -162,13 +205,21 @@
       <a href="https://www.mediafire.com/file/hsnp64lq06cm0zw/remo_TV_v3.91.apk/file" target="_blank">
         <button>
           <img src="https://logowik.com/content/uploads/images/mediafire4922.logowik.com.webp" alt="Mediafire Logo">
-          حمل من على ميديا فاير
+          ميديا فاير
         </button>
       </a>
       <a href="https://apkpure.com/remo-tv-player/com.remo.player/download" target="_blank">
         <button>
           <img src="https://cdn-1.webcatalog.io/catalog/apkpure/apkpure-icon-filled-256.png?v=1714773022463" alt="APKPure Logo">
-          حمل من على تلكرام
+          APKPure
+        </button>
+      </a>
+    </div>
+    <div class="telegram-join">
+      <a href="https://t.me/yourchannel" target="_blank">
+        <button>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram Logo">
+          إنضم إلى قناتنا على تليجرام
         </button>
       </a>
     </div>
