@@ -40,13 +40,13 @@
 
     .player-container {
       position: relative;
-      width: 98%;
+      width: 95%;
       max-width: 800px;
       margin: 20px auto;
       background-color: white;
       border-radius: 15px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding-top: 56.25%; /* نسبة 16:9 */
+      padding-top: 56.25%; /* 16:9 aspect ratio */
     }
 
     .video-js {
@@ -56,15 +56,6 @@
       width: 100%;
       height: 100%;
       border-radius: 12px;
-    }
-
-    /* تخصيص زر الجودة */
-    .vjs-http-source-selector {
-      margin-left: 10px;
-    }
-    
-    .vjs-http-source-selector .vjs-menu-button {
-      color: #fff;
     }
   </style>
 </head>
@@ -77,68 +68,19 @@
   </header>
 
   <div class="player-container">
-    <video id="my-video" class="video-js" controls preload="auto" data-setup='{}'>
-      <source src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" type="application/x-mpegURL" />
-      <p class="vjs-no-js">
-        المتصفح لا يدعم تشغيل الفيديو
-      </p>
+    <video id="my-video" class="video-js vjs-default-skin" controls preload="auto">
+      <source src="https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8" type="application/x-mpegURL" />
+      المتصفح لا يدعم تشغيل الفيديو
     </video>
   </div>
 
   <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
   <script src="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.min.js"></script>
   <script>
-    // تهيئة المشغل مع دعم اختيار الجودة
-    const player = videojs('my-video', {
-      html5: {
-        hls: {
-          overrideNative: true
-        }
-      },
-      controlBar: {
-        children: [
-          'playToggle',
-          'volumePanel',
-          'currentTimeDisplay',
-          'timeDivider',
-          'durationDisplay',
-          'progressControl',
-          'liveDisplay',
-          'remainingTimeDisplay',
-          'customControlSpacer',
-          'playbackRateMenuButton',
-          'chaptersButton',
-          'descriptionsButton',
-          'subsCapsButton',
-          'audioTrackButton',
-          'fullscreenToggle'
-        ]
-      }
-    });
-
-    // تسجيل مكون اختيار الجودة
-    videojs.registerPlugin('httpSourceSelector', videojsHttpSourceSelector);
-    player.httpSourceSelector();
-
-    // إضافة زر اختيار الجودة إلى شريط التحكم
-    player.ready(function() {
-      const controlBar = player.controlBar;
-      const httpSourceSelector = controlBar.addChild('HttpSourceSelector');
-      
-      // نقل زر الجودة إلى مكان مناسب في شريط التحكم
-      controlBar.el().insertBefore(
-        httpSourceSelector.el(),
-        controlBar.fullscreenToggle.el()
-      );
-      
-      // تحديث القائمة عند تغيير الجودة
-      player.on('loadedmetadata', function() {
-        if (player.tech_.hls) {
-          player.tech_.hls.representations().forEach(function(rep) {
-            httpSourceSelector.update();
-          });
-        }
-      });
+    const player = videojs('my-video');
+    player.httpSourceSelector({ default: 'auto' });
+    player.ready(function () {
+      player.httpSourceSelector();
     });
   </script>
 </body>
