@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>remo TV ريمو تيفي - Clappr</title>
+  <title>remo TV ريمو تيفي</title>
   <style>
     body {
       margin: 0;
@@ -38,6 +38,7 @@
     }
 
     .player-container {
+      position: relative;
       width: 95%;
       max-width: 800px;
       margin: 20px auto;
@@ -45,20 +46,17 @@
       border-radius: 15px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       padding-top: 56.25%;
-      position: relative;
     }
 
-    #clappr-player {
+    #video {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       border-radius: 12px;
-      overflow: hidden;
     }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
 </head>
 <body>
 
@@ -69,22 +67,33 @@
   </header>
 
   <div class="player-container">
-    <div id="clappr-player"></div>
+    <video id="video" controls autoplay></video>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/shaka-player.compiled.js"></script>
   <script>
-    new Clappr.Player({
-      parentId: "#clappr-player",
-      source: "https://raw.githubusercontent.com/5mzd/REMO-TV/refs/heads/main/1beinLOW.m3u8",
-      autoPlay: true,
-      mute: false,
-      width: "100%",
-      height: "100%",
-      playback: {
-        hlsUseNextLevel: false,
-        preload: "auto"
+    async function initApp() {
+      const video = document.getElementById('video');
+      const player = new shaka.Player(video);
+
+      // اختياري: تسجيل أخطاء التشغيل
+      player.addEventListener('error', (e) => console.error('خطأ:', e.detail));
+
+      // تحميل الفيديو
+      try {
+        await player.load('https://raw.githubusercontent.com/5mzd/REMO-TV/refs/heads/main/1beinLOW.m3u8');
+        console.log('تم تحميل الفيديو بنجاح');
+      } catch (error) {
+        console.error('فشل التحميل', error);
       }
-    });
+    }
+
+    // تحقق من دعم المتصفح
+    if (shaka.Player.isBrowserSupported()) {
+      initApp();
+    } else {
+      alert('المتصفح لا يدعم تشغيل الفيديو عبر Shaka Player');
+    }
   </script>
 </body>
 </html>
