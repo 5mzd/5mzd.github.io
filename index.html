@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>remo TV ريمو تيفي</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f2f2f2;
-      color: #222;
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      color: #111;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -18,25 +18,32 @@
 
     header {
       width: 100%;
-      background-color: white;
-      padding: 30px 10px 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: center;
+      background-color: #fff;
+      padding: 30px 20px 10px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 255, 0, 0.2);
     }
 
     header img {
-      max-height: 100px;
+      width: 180px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      color: #00aa00;
+      font-size: 26px;
+      margin: 0;
     }
 
     .player-container {
-      width: 95%;
+      width: 90%;
       max-width: 800px;
       margin-top: 30px;
-      background-color: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
     video {
@@ -45,47 +52,36 @@
       background-color: black;
     }
 
-    /* تخصيص واجهة الفيديو */
-    video::-webkit-media-controls-play-button,
-    video::-webkit-media-controls-pause-button {
-      background-color: #00b300;
-      border-radius: 50%;
-    }
-
-    video::-webkit-media-controls-volume-slider,
-    video::-webkit-media-controls-timeline {
-      accent-color: #00b300;
-    }
-
-    video::-webkit-media-controls {
-      color: #00b300;
-    }
-
     .quality-selector {
       margin-top: 15px;
       text-align: center;
     }
 
-    .quality-selector label {
-      font-weight: bold;
-      color: #333;
-    }
-
     .quality-selector select {
       background-color: #fff;
-      color: #00b300;
-      border: 2px solid #00b300;
+      color: #00aa00;
+      border: 1px solid #00aa00;
       padding: 6px 12px;
       font-size: 16px;
-      border-radius: 6px;
-      margin-right: 10px;
+      border-radius: 5px;
+    }
+
+    .quality-selector label {
+      font-size: 16px;
+      margin-right: 8px;
+    }
+
+    ::cue {
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <img src="https://firebasestorage.googleapis.com/v0/b/alnasseri-70c15.appspot.com/o/fs%2F1000032035.png?alt=media&token=a31e26a0-01af-4896-ba61-bed16970269e" alt="remo TV Logo">
+    <img src="https://firebasestorage.googleapis.com/v0/b/alnasseri-70c15.appspot.com/o/fs%2F1000032035.png?alt=media&token=a31e26a0-01af-4896-ba61-bed16970269e" alt="remo TV logo" />
+    <h1>ريمو تيفي remo TV</h1>
   </header>
 
   <div class="player-container">
@@ -109,8 +105,14 @@
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-        if (data.levels.length > 1) {
+        if (data.levels.length > 0) {
           qualityContainer.style.display = 'block';
+
+          const autoOption = document.createElement('option');
+          autoOption.value = -1;
+          autoOption.text = 'تلقائي';
+          autoOption.selected = true;
+          qualitySelect.appendChild(autoOption);
 
           data.levels.forEach((level, index) => {
             const option = document.createElement('option');
@@ -120,8 +122,7 @@
           });
 
           qualitySelect.addEventListener('change', () => {
-            const selectedQuality = parseInt(qualitySelect.value);
-            hls.currentLevel = selectedQuality;
+            hls.currentLevel = parseInt(qualitySelect.value);
           });
         }
       });
