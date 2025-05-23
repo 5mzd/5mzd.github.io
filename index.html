@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>remo TV ريمو تيفي</title>
   <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+
   <style>
     body {
       margin: 0;
@@ -26,23 +27,31 @@
       display: flex;
       justify-content: center;
       position: relative;
+      right: 0;
+      left: 0;
     }
 
     .logo-container {
+      width: auto;
       display: flex;
       justify-content: center;
+      margin: 0;
+      padding: 0;
       transform: translateX(5px);
     }
 
     header img {
       height: 60px;
+      width: auto;
       object-fit: contain;
+      display: block;
+      margin: 0;
     }
 
     .player-container {
       width: 95%;
       max-width: 800px;
-      margin: 20px auto 20px 5px; /* 5px من اليسار */
+      margin: 20px auto;
       background-color: white;
       padding: 15px;
       border-radius: 15px;
@@ -53,8 +62,6 @@
       width: 100%;
       height: auto;
       border-radius: 12px;
-      background-color: black;
-      font-family: inherit;
     }
   </style>
 </head>
@@ -67,12 +74,17 @@
   </header>
 
   <div class="player-container">
-    <video id="video" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'>
-      <source src="https://mbc1-enc.edgenextcdn.net/out/v1/0965e4d7deae49179172426cbfb3bc5e/index.m3u8" type="application/x-mpegURL" />
+    <video
+      id="my-video"
+      class="video-js vjs-default-skin"
+      controls
+      preload="auto"
+      data-setup='{}'>
+      <source src="https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8" type="application/x-mpegURL" />
+      المتصفح لا يدعم تشغيل الفيديو
     </video>
   </div>
 
   <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/videojs-http-streaming@3.0.0/dist/videojs-http-streaming.min.js"></script>
 </body>
 </html>
