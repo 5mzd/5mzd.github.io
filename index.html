@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>remo TV ريمو تيفي</title>
-  <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.3.5/dist/shaka-player.compiled.js"></script>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-color: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f2f2;
+      color: #222;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -19,22 +18,33 @@
 
     header {
       width: 100%;
-      background-color: #000;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0, 255, 0, 0.3);
+      background-color: white;
+      padding: 20px 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header img {
+      max-height: 80px;
+      margin-bottom: 10px;
     }
 
     header h1 {
-      color: #00ff00;
-      font-size: 32px;
+      font-size: 28px;
+      color: #00b300;
       margin: 0;
     }
 
     .player-container {
-      width: 90%;
+      width: 95%;
       max-width: 800px;
       margin-top: 30px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     video {
@@ -42,61 +52,74 @@
       border-radius: 12px;
       background-color: black;
     }
+
+    .quality-selector {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .quality-selector label {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .quality-selector select {
+      background-color: #fff;
+      color: #00b300;
+      border: 2px solid #00b300;
+      padding: 6px 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
 
   <header>
+    <img src="https://firebasestorage.googleapis.com/v0/b/alnasseri-70c15.appspot.com/o/fs%2F1000032035.png?alt=media&token=a31e26a0-01af-4896-ba61-bed16970269e" alt="remo TV Logo">
     <h1>remo TV ريمو تيفي</h1>
   </header>
 
   <div class="player-container">
-    <video id="video" controls autoplay></video>
+    <video id="video" controls></video>
+    <div class="quality-selector" id="qualityContainer" style="display: none;">
+      <label for="quality">اختر الجودة:</label>
+      <select id="quality"></select>
+    </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
-    async function initPlayer() {
-      const video = document.getElementById('video');
-      const player = new shaka.Player(video);
+    const video = document.getElementById('video');
+    const videoSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+    const qualityContainer = document.getElementById('qualityContainer');
+    const qualitySelect = document.getElementById('quality');
 
-      // دعم الأخطاء
-      player.addEventListener('error', e => {
-        console.error('Shaka Player Error:', e.detail);
-      });
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
 
-      // إعداد ClearKey
-      player.configure({
-        drm: {
-          clearKeys: {
-            '73efb1eb27294f8ea059765b368f411b': '8af553e93bc5b20e828a14a7643e0c59'
-          }
-        },
-        networking: {
-          requestFilter: function (type, request) {
-            if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
-                type === shaka.net.NetworkingEngine.RequestType.SEGMENT) {
-              request.headers['Referer'] = 'https://shahid.mbc.net/';
-              request.headers['Origin'] = 'https://shahid.mbc.net';
-              request.headers['User-Agent'] = 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36';
-            }
-          }
+      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+        if (data.levels.length > 1) {
+          qualityContainer.style.display = 'block';
+
+          data.levels.forEach((level, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.text = `${level.height}p`;
+            qualitySelect.appendChild(option);
+          });
+
+          qualitySelect.addEventListener('change', () => {
+            const selectedQuality = parseInt(qualitySelect.value);
+            hls.currentLevel = selectedQuality;
+          });
         }
       });
-
-      // تحميل الفيديو
-      try {
-        await player.load('https://4k-event2-new-25fps-enc.edgenextcdn.net/out/v1/c40564684d074b29a21efcf70725df3c/index.mpd');
-        console.log('الفيديو تم تحميله بنجاح');
-      } catch (error) {
-        console.error('فشل تحميل الفيديو:', error);
-      }
-    }
-
-    shaka.polyfill.installAll();
-    if (shaka.Player.isBrowserSupported()) {
-      initPlayer();
-    } else {
-      console.error('المتصفح لا يدعم Shaka Player');
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
     }
   </script>
 </body>
