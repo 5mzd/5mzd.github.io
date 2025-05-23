@@ -5,7 +5,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>remo TV ريمو تيفي</title>
   <style>
-    /* ... (ابقى على أنماط CSS السابقة كما هي) ... */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f2f2;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      background-color: white;
+      padding: 20px 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      max-width: 300px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    header img {
+      max-height: 80px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .player-container {
+      width: 95%;
+      max-width: 800px;
+      margin: 30px 0;
+      background-color: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    video {
+      width: 100%;
+      border-radius: 12px;
+      background-color: black;
+    }
+
+    /* تخصيص واجهة الفيديو */
+    video::-webkit-media-controls-play-button,
+    video::-webkit-media-controls-pause-button {
+      background-color: #00b300;
+      border-radius: 50%;
+    }
+
+    video::-webkit-media-controls-volume-slider,
+    video::-webkit-media-controls-timeline {
+      accent-color: #00b300;
+    }
+
+    video::-webkit-media-controls {
+      color: #00b300;
+    }
+
+    .quality-selector {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .quality-selector label {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .quality-selector select {
+      background-color: #fff;
+      color: #00b300;
+      border: 2px solid #00b300;
+      padding: 6px 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -22,132 +108,46 @@
       <label for="quality">اختر الجودة:</label>
       <select id="quality"></select>
     </div>
-
-    <div class="config-panel">
-      <h3>إعدادات الاتصال</h3>
-      <div class="config-input">
-        <label for="streamUrl">رابط البث:</label>
-        <input type="text" id="streamUrl" placeholder="https://example.com/stream.m3u8">
-      </div>
-      <!-- باقي حقول الإدخال -->
-      <button id="loadStream" class="btn">تشغيل البث</button>
-      <div id="status" class="status" style="display: none;"></div>
-    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
     const video = document.getElementById('video');
-    const streamUrlInput = document.getElementById('streamUrl');
-    const loadStreamBtn = document.getElementById('loadStream');
+    const videoSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
     const qualityContainer = document.getElementById('qualityContainer');
     const qualitySelect = document.getElementById('quality');
-    const statusDiv = document.getElementById('status');
 
-    let hls = null;
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
 
-    function showStatus(message, isError = false) {
-      statusDiv.textContent = message;
-      statusDiv.className = isError ? 'status error' : 'status success';
-      statusDiv.style.display = 'block';
-    }
-
-    function loadStream() {
-      if (hls) {
-        hls.destroy();
-      }
-
-      const streamUrl = streamUrlInput.value.trim();
-      if (!streamUrl) {
-        showStatus('الرجاء إدخال رابط البث', true);
-        return;
-      }
-
-      // إعداد CORS proxy لتفادي مشاكل CORS
-      const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-      const useProxy = !streamUrl.includes('mux.dev'); // لا تستخدم البروكسي مع الروابط التجريبية
-
-      const config = {
-        xhrSetup: function(xhr, url) {
-          if (useProxy) {
-            xhr.open('GET', corsProxy + url, true);
-          }
-          xhr.withCredentials = true;
-        },
-        enableWorker: true,
-        lowLatencyMode: true,
-        backBufferLength: 30
-      };
-
-      if (Hls.isSupported()) {
-        hls = new Hls(config);
-        hls.loadSource(useProxy ? corsProxy + streamUrl : streamUrl);
-        hls.attachMedia(video);
-
-        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+        if (data.levels.length > 0) {
           qualityContainer.style.display = 'block';
-          qualitySelect.innerHTML = '';
 
+          // خيار تلقائي
           const autoOption = document.createElement('option');
           autoOption.value = -1;
           autoOption.text = 'تلقائي';
           autoOption.selected = true;
           qualitySelect.appendChild(autoOption);
 
-          hls.levels.forEach((level, index) => {
+          data.levels.forEach((level, index) => {
             const option = document.createElement('option');
             option.value = index;
-            option.text = `${level.height}p (${Math.round(level.bitrate/1000)}kbps)`;
+            option.text = `${level.height}p`;
             qualitySelect.appendChild(option);
           });
 
-          showStatus('جاري التشغيل...');
-          video.play().catch(e => {
-            showStatus('يتطلب التفاعل مع الصفحة لتشغيل الفيديو', true);
+          qualitySelect.addEventListener('change', () => {
+            hls.currentLevel = parseInt(qualitySelect.value);
           });
-        });
-
-        hls.on(Hls.Events.ERROR, function(event, data) {
-          let errorMsg = 'خطأ في تحميل البث';
-          if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-            errorMsg = 'مشكلة في الشبكة أو الرابط غير صحيح';
-          } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-            errorMsg = 'مشكلة في تنسيق الفيديو';
-          }
-          
-          if (data.fatal) {
-            showStatus(`${errorMsg}: ${data.details}`, true);
-            switch(data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                hls.startLoad();
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                hls.recoverMediaError();
-                break;
-              default:
-                loadStream();
-                break;
-            }
-          }
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = streamUrl;
-        video.addEventListener('loadedmetadata', function() {
-          showStatus('جاري التشغيل (وضع Safari)...');
-          video.play().catch(e => {
-            showStatus('يتطلب التفاعل مع الصفحة لتشغيل الفيديو', true);
-          });
-        });
-      } else {
-        showStatus('المتصفح لا يدعم تشغيل هذا النوع من البث', true);
-      }
+        }
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
     }
-
-    loadStreamBtn.addEventListener('click', loadStream);
-
-    // مثال لتحميل رابط افتراضي
-    streamUrlInput.value = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
-    loadStream();
   </script>
 </body>
 </html>
