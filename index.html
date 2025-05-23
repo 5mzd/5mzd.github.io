@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>remo TV ريمو تيفي</title>
+  <link rel="icon" type="image/png" href="https://firebasestorage.googleapis.com/v0/b/alnasseri-70c15.appspot.com/o/fs%2F1000032030.png?alt=media&token=0eef3c8f-6eba-4af6-bd33-da5a6870418b">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -136,6 +137,10 @@
       margin-bottom: 15px;
     }
 
+    .download-section h2 strong {
+      font-weight: 700;
+    }
+
     .download-buttons {
       display: flex;
       justify-content: center;
@@ -198,6 +203,64 @@
     .telegram-join img {
       height: 20px;
     }
+
+    /* Dialog */
+    #telegramDialog {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    #telegramDialog .dialog-box {
+      background: white;
+      padding: 20px 25px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 300px;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    #telegramDialog h2 {
+      margin-top: 0;
+      color: #D9534F;
+    }
+
+    #telegramDialog p {
+      font-size: 15px;
+    }
+
+    #telegramDialog .dialog-actions {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    #telegramDialog button {
+      padding: 6px 12px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    #telegramDialog .confirm {
+      background-color: #179CDE;
+      color: white;
+    }
+
+    #telegramDialog .cancel {
+      background-color: #ccc;
+      color: black;
+    }
   </style>
 </head>
 <body>
@@ -222,7 +285,7 @@
   <div class="quality-note">تنبيه: يتم عرض المباريات المهمة فقط!</div>
 
   <div class="download-section">
-    <h2>حمل التطبيق الآن</h2>
+    <h2><strong>حمل التطبيق الآن</strong></h2>
     <div class="download-buttons">
       <a href="https://www.mediafire.com/file/hsnp64lq06cm0zw/remo_TV_v3.91.apk/file" target="_blank">
         <button>
@@ -250,9 +313,22 @@
   <div class="report-issue">
     <a href="https://t.me/remo_dev_bot" target="_blank">
       <button>
-        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png" alt="Report Icon">الإبلاغ عن مشكلة أو إقتراح
+        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png" alt="Report Icon">
+        الإبلاغ عن مشكلة
       </button>
     </a>
+  </div>
+
+  <!-- Dialog -->
+  <div id="telegramDialog">
+    <div class="dialog-box">
+      <h2>تنبيه</h2>
+      <p>إشترك بقناتنا على التلجرام لمتابعة أخبار التطبيق والموقع</p>
+      <div class="dialog-actions">
+        <button class="confirm" onclick="window.location.href='https://t.me/remotvv'">موافق</button>
+        <button class="cancel" onclick="document.getElementById('telegramDialog').style.display='none'">إلغاء</button>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/shaka-player.compiled.js"></script>
@@ -302,6 +378,11 @@
     } else {
       alert('المتصفح لا يدعم تشغيل الفيديو عبر Shaka Player');
     }
+
+    // Show dialog on load
+    window.addEventListener('load', () => {
+      document.getElementById('telegramDialog').style.display = 'flex';
+    });
   </script>
 </body>
 </html>
