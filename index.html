@@ -52,6 +52,16 @@
       height: auto;
       display: block;
     }
+
+    .quality-selector {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    select {
+      padding: 5px 10px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -66,17 +76,51 @@
     <video id="video" controls autoplay playsinline></video>
   </div>
 
+  <div class="quality-selector">
+    <label for="quality">اختر الجودة:</label>
+    <select id="quality">
+      <option value="auto">تلقائي</option>
+    </select>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/shaka-player.compiled.js"></script>
   <script>
+    let player;
+
     async function initApp() {
       const video = document.getElementById('video');
-      const player = new shaka.Player(video);
+      player = new shaka.Player(video);
 
       player.addEventListener('error', (e) => console.error('خطأ:', e.detail));
 
       try {
         await player.load('https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8');
         console.log('تم تحميل الفيديو بنجاح');
+
+        // إعداد خيارات الجودة
+        const tracks = player.getVariantTracks();
+        const select = document.getElementById('quality');
+
+        tracks.forEach((track, index) => {
+          const option = document.createElement('option');
+          option.value = track.id;
+          option.textContent = `${track.height}p`;
+          select.appendChild(option);
+        });
+
+        select.addEventListener('change', () => {
+          const selected = select.value;
+          if (selected === 'auto') {
+            player.configure({ abr: { enabled: true } });
+          } else {
+            player.configure({ abr: { enabled: false } });
+            const track = tracks.find(t => t.id == selected);
+            if (track) {
+              player.selectVariantTrack(track, /* clearBuffer= */ true);
+            }
+          }
+        });
+
       } catch (error) {
         console.error('فشل التحميل', error);
       }
