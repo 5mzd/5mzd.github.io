@@ -54,17 +54,8 @@
       display: block;
     }
 
-    .quality-note {
-      font-size: 14px;
-      color: #d80000;
-      font-weight: 600;
-      margin: 10px auto -5px;
-      text-align: center;
-      font-family: 'Cairo', sans-serif;
-    }
-
     .quality-selector {
-      margin: 15px auto;
+      margin: 15px auto 5px;
       padding: 10px 20px;
       background-color: #ffffff;
       border: 2px solid #2CAF1D;
@@ -97,6 +88,41 @@
       border-color: #2CAF1D;
     }
 
+    .quality-note {
+      font-size: 14px;
+      color: #d80000;
+      font-weight: 600;
+      margin: 10px auto 10px;
+      text-align: center;
+    }
+
+    .report-issue {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .report-issue a {
+      text-decoration: none;
+    }
+
+    .report-issue button {
+      background-color: #FF6347;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .report-issue img {
+      height: 16px;
+    }
+
     .download-section {
       text-align: center;
       margin: 30px auto;
@@ -105,10 +131,9 @@
 
     .download-section h2 {
       color: #2CAF1D;
-      font-weight: 500;
+      font-weight: bold;
       font-size: 16px;
       margin-bottom: 15px;
-      font-family: 'Cairo', sans-serif;
     }
 
     .download-buttons {
@@ -121,7 +146,6 @@
 
     .download-buttons a {
       text-decoration: none;
-      font-family: 'Cairo', sans-serif;
     }
 
     .download-buttons button {
@@ -152,10 +176,8 @@
     }
 
     .telegram-join a {
-  text-decoration: none;
-  width: auto;
-  max-width: none;
-}
+      text-decoration: none;
+    }
 
     .telegram-join button {
       width: 100%;
@@ -190,14 +212,14 @@
     <video id="video" controls autoplay playsinline></video>
   </div>
 
-  <div class="quality-note">تنبيه: يتم عرض المباريات المهمة فقط!</div>
-
   <div class="quality-selector">
     <label for="quality">اختر الجودة:</label>
     <select id="quality">
       <option value="auto">تلقائي</option>
     </select>
   </div>
+
+  <div class="quality-note">تنبيه: يتم عرض المباريات المهمة فقط!</div>
 
   <div class="download-section">
     <h2>حمل التطبيق الآن</h2>
@@ -223,6 +245,14 @@
         </button>
       </a>
     </div>
+  </div>
+
+  <div class="report-issue">
+    <a href="https://t.me/remo_dev_bot" target="_blank">
+      <button>
+        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png" alt="Report Icon">الإبلاغ عن مشكلة أو إقتراح
+      </button>
+    </a>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/shaka-player.compiled.js"></script>
