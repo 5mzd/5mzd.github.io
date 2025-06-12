@@ -11,7 +11,7 @@
     gtag('js', new Date());
     gtag('config', 'G-K7QK3K5D59');
   </script>
-  <title>مشغل الفيديو المتطور</title>
+  <title>مشغل ريمو | remo Player</title>
   <link rel="icon" type="image/png" href="https://firebasestorage.googleapis.com/v0/b/alnasseri-70c15.appspot.com/o/fs%2F1000032030.png?alt=media&token=0eef3c8f-6eba-4af6-bd33-da5a6870418b">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -241,86 +241,6 @@
       height: 20px;
     }
 
-    /* Headers Section */
-    .headers-section {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-      padding: 20px;
-    }
-
-    .section-title {
-      font-size: 20px;
-      margin-bottom: 15px;
-      color: var(--primary-color);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .section-title-icon {
-      width: 24px;
-      height: 24px;
-    }
-
-    .headers-list {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .header-item {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .header-input {
-      flex: 1;
-      padding: 10px 15px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      background-color: var(--card-bg);
-      color: var(--text-color);
-      font-family: 'Cairo', sans-serif;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 5px;
-    }
-
-    .header-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .header-btn:hover {
-      transform: scale(1.1);
-    }
-
-    .add-header-btn {
-      margin-top: 10px;
-      width: 100%;
-      padding: 10px;
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .add-header-btn:hover {
-      background-color: #239e16;
-    }
-
     /* Status Bar */
     .status-bar {
       display: flex;
@@ -431,15 +351,6 @@
       .control-buttons {
         grid-template-columns: 1fr;
       }
-      
-      .header-item {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .header-actions {
-        justify-content: flex-end;
-      }
     }
 
     /* Animations */
@@ -516,28 +427,6 @@
       </div>
     </section>
 
-    <section class="headers-section">
-      <h3 class="section-title">
-        <svg class="section-title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-          <polyline points="22,6 12,13 2,6"></polyline>
-        </svg>
-        رؤوس HTTP مخصصة
-      </h3>
-      
-      <div class="headers-list" id="headersList">
-        <!-- Headers will be added here dynamically -->
-      </div>
-      
-      <button class="add-header-btn" onclick="addHeaderField()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        إضافة رأس جديد
-      </button>
-    </section>
-
     <div class="status-bar">
       <div class="status-item">
         <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -580,20 +469,13 @@
   <script>
     let hls;
     let video = document.getElementById('video');
-    let headers = [];
     let qualityLevels = [];
 
     // Initialize the app
     function init() {
       checkDarkModePreference();
-      loadPlayerSettings();
-      loadHeaders();
+      updatePlayerStatus('جاهز');
       setupEventListeners();
-      
-      // Add initial header field if none exists
-      if (headers.length === 0) {
-        addHeaderField();
-      }
     }
 
     // Check user's dark mode preference
@@ -619,30 +501,6 @@
     function disableDarkMode() {
       document.body.classList.remove('dark-mode');
       localStorage.setItem('darkMode', 'disabled');
-    }
-
-    // Load player settings from localStorage
-    function loadPlayerSettings() {
-      const lastUrl = localStorage.getItem('lastVideoUrl');
-      if (lastUrl) {
-        document.getElementById('videoUrl').value = lastUrl;
-      }
-      
-      updatePlayerStatus('جاهز');
-    }
-
-    // Load headers from localStorage
-    function loadHeaders() {
-      const savedHeaders = localStorage.getItem('customHeaders');
-      if (savedHeaders) {
-        headers = JSON.parse(savedHeaders);
-        renderHeaders();
-      }
-    }
-
-    // Save headers to localStorage
-    function saveHeaders() {
-      localStorage.setItem('customHeaders', JSON.stringify(headers));
     }
 
     // Setup event listeners
@@ -679,59 +537,6 @@
     // Update player status
     function updatePlayerStatus(status) {
       document.getElementById('playerStatus').textContent = status;
-    }
-
-    // Add a new header field
-    function addHeaderField(header = { name: '', value: '' }) {
-      headers.push(header);
-      renderHeaders();
-    }
-
-    // Remove a header field
-    function removeHeaderField(index) {
-      headers.splice(index, 1);
-      renderHeaders();
-      saveHeaders();
-    }
-
-    // Update a header field
-    function updateHeaderField(index, field, value) {
-      headers[index][field] = value;
-      saveHeaders();
-    }
-
-    // Render all headers
-    function renderHeaders() {
-      const headersList = document.getElementById('headersList');
-      headersList.innerHTML = '';
-      
-      headers.forEach((header, index) => {
-        const headerItem = document.createElement('div');
-        headerItem.className = 'header-item';
-        headerItem.innerHTML = `
-          <input type="text" class="header-input" placeholder="اسم الرأس (مثال: User-Agent)" 
-                 value="${header.name}" 
-                 onchange="updateHeaderField(${index}, 'name', this.value)">
-          <input type="text" class="header-input" placeholder="قيمة الرأس" 
-                 value="${header.value}" 
-                 onchange="updateHeaderField(${index}, 'value', this.value)">
-          <div class="header-actions">
-            <div class="header-btn" style="background-color: var(--success-color);" title="تمكين">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-            </div>
-            <div class="header-btn" style="background-color: var(--error-color);" title="حذف" onclick="removeHeaderField(${index})">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </div>
-          </div>
-        `;
-        headersList.appendChild(headerItem);
-      });
     }
 
     // Show quality dialog
@@ -789,8 +594,6 @@
         return;
       }
       
-      // Save the URL for later use
-      localStorage.setItem('lastVideoUrl', streamUrl);
       updatePlayerStatus('جاري التحميل...');
       
       // Destroy previous HLS instance if exists
@@ -810,15 +613,7 @@
           abrEwmaDefaultEstimate: 500000,
           abrBandWidthFactor: 0.95,
           abrBandWidthUpFactor: 0.7,
-          abrMaxWithRealBitrate: true,
-          xhrSetup: function(xhr, url) {
-            // Apply custom headers
-            headers.forEach(header => {
-              if (header.name && header.value) {
-                xhr.setRequestHeader(header.name, header.value);
-              }
-            });
-          }
+          abrMaxWithRealBitrate: true
         });
         
         hls.loadSource(streamUrl);
@@ -872,7 +667,6 @@
       
       video.src = '';
       document.getElementById('videoUrl').value = '';
-      localStorage.removeItem('lastVideoUrl');
       updatePlayerStatus('جاهز');
     }
 
